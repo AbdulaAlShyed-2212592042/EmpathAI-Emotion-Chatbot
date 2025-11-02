@@ -1,71 +1,74 @@
-# EmpathAI Project Status - COMPLETE ✅
+# EmpathAI Project Status - Dataset Preprocessing Complete ✅
 
-## 🎉 Installation Complete!
+## 🎉 Dataset Preprocessing Pipeline Complete!
 
-Your EmpathAI Emotion Chatbot project is now fully set up and ready to use.
+Your EmpathAI dataset preprocessing pipeline is fully set up and ready for training emotion recognition models.
 
 ## 📊 Dataset Summary
-- **Total labeled emotion entries**: 139,315
-- **Datasets included**: GoEmotions, Emotion, IMDB, TweetEval, Yelp
-- **Emotion categories**: 28 unique emotions from GoEmotions
-- **Combined dataset**: `combined_dataset_clean.json`
+- **Total preprocessed entries**: 139,311 (4 removed due to quality issues)
+- **Datasets included**: GoEmotions, IMDB, Emotion, TweetEval, Yelp Reviews
+- **Unified emotion categories**: 35 emotions with proper mapping
+- **Train/Val/Test splits**: 97,517 / 20,897 / 20,897 (70%/15%/15%)
+- **Output formats**: JSON, CSV, HuggingFace datasets, RoBERTa-ready
 
 ## 🛠️ Environment Status
 - **Python Version**: 3.12.10
 - **Environment**: Virtual environment (`.venv`)
-- **Dependencies**: All 17 packages installed successfully
+- **Dependencies**: All required packages installed successfully
 - **Key Libraries**: 
   - PyTorch 2.9.0
   - Transformers 4.57.1
-  - OpenAI 2.6.1
   - Datasets 4.3.0
-  - Streamlit 1.51.0
+  - scikit-learn (for preprocessing)
+  - pandas, numpy (for data analysis)
 
 ## 📁 Project Structure
 ```
 EmpathAI-Emotion-Chatbot/
-├── src/
-│   ├── emotion_detector.py     # Google GoEmotions model integration
-│   └── chatgpt_integration.py  # OpenAI API with emotion awareness
-├── dataset.py                  # Download datasets from HuggingFace
-├── dataset_mapping.py          # Map emotion labels to names
-├── dataset_cleaner.py          # Remove unlabeled data
-├── dataset_combiner.py         # Combine all datasets
-├── demo.py                     # Test the emotion detection system
-├── combined_dataset_clean.json # Final processed dataset
-├── requirements.txt            # All dependencies
-├── README.md                   # Complete documentation
-└── .gitignore                  # Ignore large files and cache
+├── dataset.py                      # Download datasets from HuggingFace
+├── dataset_mapping.py              # Map emotion labels to names
+├── dataset_cleaner.py              # Remove unlabeled data
+├── dataset_combiner.py             # Combine all datasets
+├── dataset_preprocessing.py        # Preprocess for RoBERTa training
+├── validate_preprocessed_data.py   # Validate preprocessed data
+├── train_roberta_template.py       # Template for model training
+├── combined_dataset_clean.json     # Raw combined dataset (139K entries)
+├── preprocessed_data_roberta/      # Preprocessed training data
+├── requirements.txt                # All dependencies
+├── README.md                       # Complete documentation
+├── PREPROCESSING_SUMMARY.md        # Detailed preprocessing docs
+└── .gitignore                      # Ignore large files and cache
 ```
 
 ## 🚀 Ready to Use!
 
-### Test the System:
+### Validate Preprocessed Data:
 ```powershell
-"C:/Users/sslue/AI chatbot/EmpathAI-Emotion-Chatbot/.venv/Scripts/python.exe" demo.py
+"C:/Users/sslue/AI chatbot/EmpathAI-Emotion-Chatbot/.venv/Scripts/python.exe" validate_preprocessed_data.py
 ```
 
-### Run Individual Components:
+### Run Complete Pipeline:
 ```powershell
-# Test emotion detection
-"C:/Users/sslue/AI chatbot/EmpathAI-Emotion-Chatbot/.venv/Scripts/python.exe" -c "from src.emotion_detector import EmotionDetector; detector = EmotionDetector(); print(detector.predict('I am so happy today!'))"
-
-# Test ChatGPT integration (requires OPENAI_API_KEY)
-"C:/Users/sslue/AI chatbot/EmpathAI-Emotion-Chatbot/.venv/Scripts/python.exe" -c "from src.chatgpt_integration import get_empathetic_response; print('Set OPENAI_API_KEY to test ChatGPT integration')"
+# Download and preprocess all datasets
+"C:/Users/sslue/AI chatbot/EmpathAI-Emotion-Chatbot/.venv/Scripts/python.exe" dataset.py --all
+"C:/Users/sslue/AI chatbot/EmpathAI-Emotion-Chatbot/.venv/Scripts/python.exe" dataset_cleaner.py
+"C:/Users/sslue/AI chatbot/EmpathAI-Emotion-Chatbot/.venv/Scripts/python.exe" dataset_combiner.py
+"C:/Users/sslue/AI chatbot/EmpathAI-Emotion-Chatbot/.venv/Scripts/python.exe" dataset_preprocessing.py
 ```
 
 ## 🔧 Next Steps:
-1. **Set OpenAI API Key**: Add your API key to environment variables or `.env` file
-2. **Run Demo**: Test the complete system with `demo.py`
-3. **Fine-tune Models**: Use the 139K labeled examples for custom training
-4. **Deploy**: Use Streamlit for web interface or integrate into your application
+1. **Train Models**: Use the preprocessed data with `train_roberta_template.py`
+2. **Customize Preprocessing**: Modify parameters in `dataset_preprocessing.py`
+3. **Add New Datasets**: Extend the pipeline with additional emotion datasets
+4. **Fine-tune Models**: Use the 139K labeled examples for custom training
+5. **Build Applications**: Create emotion detection and sentiment analysis apps
 
 ## ✨ Features Available:
-- ✅ Multi-emotion detection (28 categories)
+- ✅ Multi-dataset preprocessing (5 emotion datasets)
 - ✅ Large-scale training dataset (139K examples)
-- ✅ ChatGPT integration with emotion awareness
-- ✅ Modular architecture for easy extension
-- ✅ Comprehensive documentation
-- ✅ Ready-to-use demo script
+- ✅ RoBERTa-optimized preprocessing
+- ✅ Multiple output formats (JSON, CSV, HuggingFace)
+- ✅ Comprehensive documentation and validation
+- ✅ Template training scripts
 
-Your emotion-aware chatbot is ready for development and deployment! 🤖💭
+Your emotion dataset preprocessing pipeline is ready for model training! 🤖�
