@@ -27,10 +27,12 @@ except Exception as e:
 
 
 DEFAULT_DATASETS: Dict[str, str] = {
-    # key: friendly name, value: HF dataset id
+    # key: friendly name, value: HF dataset id (some may include config after colon)
     "go_emotions": "go_emotions",
     "emotion": "emotion",  # Alternative emotion dataset
-    "daily_dialog": "daily_dialog",  # Conversational dataset
+    "tweet_eval_emotion": "tweet_eval:emotion",  # Twitter emotion classification
+    "imdb": "imdb",  # Sentiment dataset
+    "yelp_review_full": "yelp_review_full",  # Review sentiment
 }
 
 
@@ -53,13 +55,29 @@ def download_and_save(dataset_id: str, outdir: str, splits: Iterable[str] | None
     If `limit` is provided, only the first `limit` rows of each split will be written.
     """
     print(f"Loading dataset '{dataset_id}' from Hugging Face...")
+    
+    # Handle datasets with configs (format: "dataset_name:config_name")
+    if ":" in dataset_id:
+        dataset_name, config_name = dataset_id.split(":", 1)
+        safe_name = f"{dataset_name}_{config_name}"
+    else:
+        dataset_name = dataset_id
+        config_name = None
+        safe_name = dataset_name
+    
     try:
-        ds = load_dataset(dataset_id)
+        if config_name:
+            ds = load_dataset(dataset_name, config_name)
+        else:
+            ds = load_dataset(dataset_name)
     except UnicodeDecodeError as e:
         print(f"  Unicode error with '{dataset_id}': {e}")
         print("  Trying to load with streaming=True...")
         try:
-            ds = load_dataset(dataset_id, streaming=True)
+            if config_name:
+                ds = load_dataset(dataset_name, config_name, streaming=True)
+            else:
+                ds = load_dataset(dataset_name, streaming=True)
             # Convert streaming dataset to regular dataset for processing
             if isinstance(ds, dict):
                 ds = {split: list(split_ds) for split, split_ds in ds.items()}
@@ -68,6 +86,9 @@ def download_and_save(dataset_id: str, outdir: str, splits: Iterable[str] | None
         except Exception as e2:
             print(f"  Failed to load '{dataset_id}' even with streaming: {e2}")
             return
+    except Exception as e:
+        print(f"  Error loading '{dataset_id}': {e}")
+        return
 
     if isinstance(ds, DatasetDict):
         for split_name, split_ds in ds.items():
@@ -77,7 +98,7 @@ def download_and_save(dataset_id: str, outdir: str, splits: Iterable[str] | None
             subset = split_ds
             if limit is not None:
                 subset = split_ds.select(range(min(limit, len(split_ds))))
-            outpath = os.path.join(outdir, dataset_id, f"{split_name}.jsonl")
+            outpath = os.path.join(outdir, safe_name, f"{split_name}.jsonl")
             save_jsonl(subset, outpath)
             print(f"    saved -> {outpath}")
     else:
@@ -86,7 +107,7 @@ def download_and_save(dataset_id: str, outdir: str, splits: Iterable[str] | None
         subset = ds
         if limit is not None:
             subset = ds.select(range(min(limit, len(ds))))
-        outpath = os.path.join(outdir, dataset_id + ".jsonl")
+        outpath = os.path.join(outdir, safe_name + ".jsonl")
         save_jsonl(subset, outpath)
         print(f"    saved -> {outpath}")
 
