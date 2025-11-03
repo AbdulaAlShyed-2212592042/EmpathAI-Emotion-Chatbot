@@ -25,13 +25,15 @@ Your EmpathAI dataset preprocessing pipeline is fully set up and ready for train
 ## 📁 Project Structure
 ```
 EmpathAI-Emotion-Chatbot/
-├── dataset.py                      # Download datasets from HuggingFace
-├── dataset_mapping.py              # Map emotion labels to names
-├── dataset_cleaner.py              # Remove unlabeled data
-├── dataset_combiner.py             # Combine all datasets
-├── dataset_preprocessing.py        # Preprocess for RoBERTa training
-├── validate_preprocessed_data.py   # Validate preprocessed data
-├── train_roberta_template.py       # Template for model training
+├── dataset_tools/                  # Dataset processing toolkit
+│   ├── dataset.py                  # Download datasets from HuggingFace
+│   ├── dataset_mapping.py          # Map emotion labels to names
+│   ├── dataset_cleaner.py          # Remove unlabeled data
+│   ├── dataset_combiner.py         # Combine all datasets
+│   ├── dataset_preprocessing.py    # Preprocess for RoBERTa training
+│   ├── validate_preprocessed_data.py # Validate preprocessed data
+│   ├── train_roberta_template.py   # Template for model training
+│   └── README.md                   # Dataset tools documentation
 ├── combined_dataset_clean.json     # Raw combined dataset (139K entries)
 ├── preprocessed_data_roberta/      # Preprocessed training data
 ├── requirements.txt                # All dependencies
@@ -44,21 +46,21 @@ EmpathAI-Emotion-Chatbot/
 
 ### Validate Preprocessed Data:
 ```powershell
-"C:/Users/sslue/AI chatbot/EmpathAI-Emotion-Chatbot/.venv/Scripts/python.exe" validate_preprocessed_data.py
+"C:/Users/sslue/AI chatbot/EmpathAI-Emotion-Chatbot/.venv/Scripts/python.exe" dataset_tools/validate_preprocessed_data.py
 ```
 
 ### Run Complete Pipeline:
 ```powershell
 # Download and preprocess all datasets
-"C:/Users/sslue/AI chatbot/EmpathAI-Emotion-Chatbot/.venv/Scripts/python.exe" dataset.py --all
-"C:/Users/sslue/AI chatbot/EmpathAI-Emotion-Chatbot/.venv/Scripts/python.exe" dataset_cleaner.py
-"C:/Users/sslue/AI chatbot/EmpathAI-Emotion-Chatbot/.venv/Scripts/python.exe" dataset_combiner.py
-"C:/Users/sslue/AI chatbot/EmpathAI-Emotion-Chatbot/.venv/Scripts/python.exe" dataset_preprocessing.py
+"C:/Users/sslue/AI chatbot/EmpathAI-Emotion-Chatbot/.venv/Scripts/python.exe" dataset_tools/dataset.py --all
+"C:/Users/sslue/AI chatbot/EmpathAI-Emotion-Chatbot/.venv/Scripts/python.exe" dataset_tools/dataset_cleaner.py
+"C:/Users/sslue/AI chatbot/EmpathAI-Emotion-Chatbot/.venv/Scripts/python.exe" dataset_tools/dataset_combiner.py
+"C:/Users/sslue/AI chatbot/EmpathAI-Emotion-Chatbot/.venv/Scripts/python.exe" dataset_tools/dataset_preprocessing.py
 ```
 
 ## 🔧 Next Steps:
-1. **Train Models**: Use the preprocessed data with `train_roberta_template.py`
-2. **Customize Preprocessing**: Modify parameters in `dataset_preprocessing.py`
+1. **Train Models**: Use the preprocessed data with `dataset_tools/train_roberta_template.py`
+2. **Customize Preprocessing**: Modify parameters in `dataset_tools/dataset_preprocessing.py`
 3. **Add New Datasets**: Extend the pipeline with additional emotion datasets
 4. **Fine-tune Models**: Use the 139K labeled examples for custom training
 5. **Build Applications**: Create emotion detection and sentiment analysis apps

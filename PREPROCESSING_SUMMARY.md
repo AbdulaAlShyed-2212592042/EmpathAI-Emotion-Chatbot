@@ -1,11 +1,11 @@
 # Dataset Preprocessing Summary for RoBERTa-base-sentiment
 
 ## Overview
-Successfully created a comprehensive dataset preprocessing pipeline for training RoBERTa-base-sentiment model on emotion classification tasks. The preprocessing transforms the combined emotion dataset into multiple formats optimized for transformer model training.
+Successfully created a comprehensive dataset preprocessing pipeline for training RoBERTa-base-sentiment model on emotion classification tasks. All dataset processing tools are now organized in the `dataset_tools/` folder for better project structure.
 
 ## Files Created
 
-### 1. `dataset_preprocessing.py`
+### 1. `dataset_tools/dataset_preprocessing.py`
 **Main preprocessing script** with the following features:
 - **Text Cleaning**: Removes excessive whitespace, special characters, handles URLs/mentions/hashtags
 - **Tokenization**: Uses RoBERTa tokenizer for proper token counting and truncation
@@ -14,14 +14,14 @@ Successfully created a comprehensive dataset preprocessing pipeline for training
 - **Multiple Output Formats**: JSON, CSV, HuggingFace datasets, and RoBERTa-specific formats
 - **Comprehensive Statistics**: Text length, token counts, emotion distributions, quality metrics
 
-### 2. `validate_preprocessed_data.py`
+### 2. `dataset_tools/validate_preprocessed_data.py`
 **Validation and demonstration script** that:
 - Validates all preprocessed data formats
 - Shows dataset statistics and quality metrics
 - Demonstrates training readiness
 - Creates a template training script
 
-### 3. `train_roberta_template.py`
+### 3. `dataset_tools/train_roberta_template.py`
 **Template training script** for RoBERTa fine-tuning with proper setup for the preprocessed data.
 
 ## Preprocessed Dataset Details

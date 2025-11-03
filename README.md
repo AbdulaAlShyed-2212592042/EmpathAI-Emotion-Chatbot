@@ -70,15 +70,15 @@ This project processes and combines multiple emotion datasets into a unified for
 **Run the full preprocessing pipeline**:
 ```bash
 # Download and combine all datasets, then preprocess for RoBERTa
-python dataset.py --all
-python dataset_cleaner.py
-python dataset_combiner.py
-python dataset_preprocessing.py --input combined_dataset_clean.json --output preprocessed_data_roberta
+python dataset_tools/dataset.py --all
+python dataset_tools/dataset_cleaner.py
+python dataset_tools/dataset_combiner.py
+python dataset_tools/dataset_preprocessing.py --input combined_dataset_clean.json --output preprocessed_data_roberta
 ```
 
 **Validate the results**:
 ```bash
-python validate_preprocessed_data.py
+python dataset_tools/validate_preprocessed_data.py
 ```
 
 ### Step-by-Step Dataset Processing
@@ -86,37 +86,37 @@ python validate_preprocessed_data.py
 **1. Download datasets** from Hugging Face:
 ```bash
 # Download all default datasets
-python dataset.py --all
+python dataset_tools/dataset.py --all
 
 # Download specific datasets
-python dataset.py --datasets "go_emotions,emotion"
+python dataset_tools/dataset.py --datasets "go_emotions,emotion"
 
 # Download with row limits (for testing)
-python dataset.py --datasets "imdb" --limit 1000
+python dataset_tools/dataset.py --datasets "imdb" --limit 1000
 ```
 
 **2. Analyze dataset structure**:
 ```bash
 # Show structure and samples from all datasets
-python dataset_mapping.py
+python dataset_tools/dataset_mapping.py
 ```
 
 **3. Clean datasets** (remove unlabeled entries):
 ```bash
 # Clean and save to dataset_cleaned/
-python dataset_cleaner.py
+python dataset_tools/dataset_cleaner.py
 ```
 
 **4. Combine datasets** into single JSON:
 ```bash
 # Create unified dataset with emotion labels
-python dataset_combiner.py
+python dataset_tools/dataset_combiner.py
 ```
 
 **5. Preprocess for training**:
 ```bash
 # Create RoBERTa-ready training data
-python dataset_preprocessing.py --input combined_dataset_clean.json --output preprocessed_data_roberta
+python dataset_tools/dataset_preprocessing.py --input combined_dataset_clean.json --output preprocessed_data_roberta
 ```
 
 ### Using Preprocessed Data
@@ -152,22 +152,22 @@ EmpathAI-Emotion-Chatbot/
 │
 ├── combined_dataset_clean.json     # Main dataset (139K emotion entries)
 │
-├── dataset.py                      # Download datasets from Hugging Face
-├── dataset_mapping.py              # Analyze and map dataset structures
-├── dataset_cleaner.py              # Remove unlabeled/invalid entries
-├── dataset_combiner.py             # Combine datasets into single JSON
-├── dataset_preprocessing.py        # Preprocess data for RoBERTa training
-├── validate_preprocessed_data.py   # Validate and demonstrate preprocessed data
-├── train_roberta_template.py       # Template script for RoBERTa training
+├── dataset_tools/                  # Dataset processing tools
+│   ├── dataset.py                  # Download datasets from Hugging Face
+│   ├── dataset_mapping.py          # Analyze and map dataset structures
+│   ├── dataset_cleaner.py          # Remove unlabeled/invalid entries
+│   ├── dataset_combiner.py         # Combine datasets into single JSON
+│   ├── dataset_preprocessing.py    # Preprocess data for RoBERTa training
+│   ├── validate_preprocessed_data.py # Validate and demonstrate preprocessed data
+│   ├── train_roberta_template.py   # Template script for RoBERTa training
+│   └── README.md                   # Dataset tools documentation
 │
-├── preprocessed_data_roberta/      # Preprocessed training data
-│   ├── json/                       # JSON format (train/val/test)
-│   ├── csv/                        # CSV format (train/val/test)
-│   ├── huggingface/                # HuggingFace dataset format
-│   ├── roberta_training/           # RoBERTa-specific training files
-│   └── metadata.json               # Complete preprocessing metadata
-│
-└── src/                            # Future source code (emotion detection, chatbot)
+└── preprocessed_data_roberta/      # Preprocessed training data
+    ├── json/                       # JSON format (train/val/test)
+    ├── csv/                        # CSV format (train/val/test)
+    ├── huggingface/                # HuggingFace dataset format
+    ├── roberta_training/           # RoBERTa-specific training files
+    └── metadata.json               # Complete preprocessing metadata
 ```
 
 ## Preprocessed Dataset Files
@@ -205,7 +205,7 @@ EmpathAI-Emotion-Chatbot/
 
 ```bash
 # Modify train_roberta_template.py for your needs
-python train_roberta_template.py
+python dataset_tools/train_roberta_template.py
 ```
 
 ### Recommended Hyperparameters
@@ -220,22 +220,22 @@ python train_roberta_template.py
 ### Training Options
 
 1. **Multi-Emotion Classification** (35 classes)
-   - Use `roberta_training/train_multi_emotion.json`
+   - Use `preprocessed_data_roberta/roberta_training/train_multi_emotion.json`
    - Multi-label classification task
    - Good for fine-grained emotion detection
 
 2. **Binary Sentiment Classification** (3 classes)
-   - Use `roberta_training/train_binary_sentiment.json`
+   - Use `preprocessed_data_roberta/roberta_training/train_binary_sentiment.json`
    - Simpler task, faster training
    - Good for general sentiment analysis
 
 ## Development and Customization
 
 ### Adding New Datasets
-Modify `LABEL_MAPPINGS` in `dataset_mapping.py` and `dataset_combiner.py` to add new emotion datasets.
+Modify `LABEL_MAPPINGS` in `dataset_tools/dataset_mapping.py` and `dataset_tools/dataset_combiner.py` to add new emotion datasets.
 
 ### Custom Preprocessing
-Edit `dataset_preprocessing.py` to customize:
+Edit `dataset_tools/dataset_preprocessing.py` to customize:
 - Text cleaning rules
 - Tokenization parameters
 - Label mapping strategies
