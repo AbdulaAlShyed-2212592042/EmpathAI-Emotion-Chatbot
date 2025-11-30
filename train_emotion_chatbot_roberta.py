@@ -235,7 +235,7 @@ class RobertaChatbotTrainer:
         self.warmup_steps = warmup_steps
         self.total_steps = len(train_loader) * num_epochs // gradient_accumulation_steps
         self.scheduler = ReduceLROnPlateau(
-            self.optimizer, mode='min', factor=0.5, patience=3, verbose=True, min_lr=1e-7
+            self.optimizer, mode='min', factor=0.5, patience=3, min_lr=1e-7
         )
         
         # Loss functions with label smoothing for better generalization

@@ -1,16 +1,34 @@
 # EmpathAI-Emotion-Chatbot
 
-A comprehensive dataset preprocessing pipeline for emotion recognition and sentiment analysis. This project provides tools to download, clean, combine, and preprocess multiple emotion datasets for training transformer models like RoBERTa.
+A comprehensive emotion recognition and chatbot system built with RoBERTa transformer models. This project provides end-to-end solutions from dataset preprocessing to training production-ready emotion classification models.
 
-## Features
+## 🎯 Features
 
-- **Multi-Dataset Processing**: Works with 139K+ labeled examples from 5 different emotion datasets
-- **35 Emotion Categories**: Unified emotion mapping across all datasets (GoEmotions, IMDB, Emotion, TweetEval, Yelp)
-- **RoBERTa-Ready Preprocessing**: Optimized text cleaning and tokenization for transformer models
+- **Production-Ready Emotion Model**: Fine-tuned RoBERTa-base model achieving 66.9% accuracy on 35-emotion classification
+- **Multi-Dataset Processing**: 139K+ labeled examples from 5 different emotion datasets (GoEmotions, IMDB, Emotion, TweetEval, Yelp)
+- **35 Emotion Categories**: Comprehensive emotion mapping across all datasets
+- **GPU-Optimized Training**: Full CUDA support with TF32, gradient accumulation, and mixed precision
+- **Advanced Training Features**: Early stopping, learning rate warmup, label smoothing, and F1-based model selection
 - **Multiple Output Formats**: JSON, CSV, HuggingFace datasets, and training-ready formats
-- **Comprehensive Dataset Tools**: Download, clean, map, combine, and preprocess emotion datasets
+- **Comprehensive Checkpointing**: Saves best models by both loss and F1 score
 
-## Dataset Information
+## 🏆 Model Performance
+
+**Best Model Metrics (Test Set - 20,897 examples):**
+- **Exact Match Accuracy**: 66.9%
+- **Hamming Accuracy**: 98.3%
+- **F1 Score (Macro)**: 51.7%
+- **F1 Score (Weighted)**: 70.3%
+- **Precision (Macro)**: 59.0%
+- **Recall (Macro)**: 48.7%
+
+**Training Details:**
+- Trained on **97,517 examples** (100% of training data, no cropping)
+- 23 epochs completed (early stopping triggered)
+- GPU: NVIDIA GeForce RTX 3060 (12GB VRAM)
+- Training time: ~6 hours with full dataset
+
+## 📊 Dataset Information
 
 This project processes and combines multiple emotion datasets into a unified format suitable for training transformer models:
 
@@ -31,261 +49,192 @@ This project processes and combines multiple emotion datasets into a unified for
 - **RoBERTa-optimized**: Proper tokenization, ~118 avg tokens, 5% truncation rate
 - **Multiple training formats**: Multi-emotion classification and binary sentiment
 
-### Emotion Categories (35 Total)
+### Top Emotion Categories
 
-**Top emotions by frequency:**
-- **positive/negative**: 25,000 each (IMDB sentiment)
-- **neutral**: 17,770 (GoEmotions)
-- **joy**: 9,709 | **sadness**: 8,748 | **anger**: 6,787
-- **admiration**: 5,122 | **love**: 4,217 | **approval**: 3,687
+**Most frequent emotions:**
+- **positive**: 81.3% F1 | **negative**: 91.2% F1 | **neutral**: 77.6% F1
+- **joy**: 86.8% F1 | **sadness**: 77.3% F1 | **anger**: 81.8% F1
+- **admiration**: 67.6% F1 | **love**: 86.3% F1 | **excitement**: 83.2% F1
 
-**Complete emotion set**: admiration, amusement, anger, annoyance, approval, caring, confusion, curiosity, desire, disappointment, disapproval, disgust, embarrassment, excitement, fear, gratitude, grief, joy, love, nervousness, optimism, pride, realization, relief, remorse, sadness, surprise, neutral, positive, negative, plus Yelp star ratings (1-5 stars)
+**Complete emotion set (35)**: admiration, amusement, anger, annoyance, approval, caring, confusion, curiosity, desire, disappointment, disapproval, disgust, embarrassment, excitement, fear, gratitude, grief, joy, love, nervousness, optimism, pride, realization, relief, remorse, sadness, surprise, neutral, positive, negative, plus Yelp ratings (1-5 stars)
 
-## Installation
+## 🚀 Quick Start
 
-1. **Clone the repository**:
+### Installation
+
+1. **Clone and setup**:
    ```bash
    git clone https://github.com/AbdulaAlShyed-2212592042/EmpathAI-Emotion-Chatbot.git
    cd EmpathAI-Emotion-Chatbot
-   ```
-
-2. **Create virtual environment** (recommended):
-   ```bash
-   python -m venv .venv
-   # Windows
-   .venv\Scripts\activate
-   # Linux/Mac
-   source .venv/bin/activate
-   ```
-
-3. **Install dependencies**:
-   ```bash
    pip install -r requirements.txt
    ```
 
-## Usage
+2. **Install PyTorch with GPU** (recommended):
+   ```bash
+   pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+   ```
 
-### Quick Start - Complete Pipeline
+3. **Verify GPU**:
+   ```bash
+   python -c "import torch; print('CUDA:', torch.cuda.is_available())"
+   ```
 
-**Run the full preprocessing pipeline**:
+### Train Model
+
 ```bash
-# Download and combine all datasets, then preprocess for RoBERTa
-python dataset_tools/dataset.py --all
-python dataset_tools/dataset_cleaner.py
-python dataset_tools/dataset_combiner.py
-python dataset_tools/dataset_preprocessing.py --input combined_dataset_clean.json --output preprocessed_data_roberta
+python train_emotion_chatbot_roberta.py
 ```
 
-**Validate the results**:
-```bash
-python dataset_tools/validate_preprocessed_data.py
-```
+**Training takes ~6 hours on GPU (RTX 3060) or ~20 hours on CPU.**
 
-### Step-by-Step Dataset Processing
+## 📦 Usage
 
-**1. Download datasets** from Hugging Face:
-```bash
-# Download all default datasets
-python dataset_tools/dataset.py --all
+### Predict Emotions (Inference)
 
-# Download specific datasets
-python dataset_tools/dataset.py --datasets "go_emotions,emotion"
+Create `predict_emotion.py`:
 
-# Download with row limits (for testing)
-python dataset_tools/dataset.py --datasets "imdb" --limit 1000
-```
-
-**2. Analyze dataset structure**:
-```bash
-# Show structure and samples from all datasets
-python dataset_tools/dataset_mapping.py
-```
-
-**3. Clean datasets** (remove unlabeled entries):
-```bash
-# Clean and save to dataset_cleaned/
-python dataset_tools/dataset_cleaner.py
-```
-
-**4. Combine datasets** into single JSON:
-```bash
-# Create unified dataset with emotion labels
-python dataset_tools/dataset_combiner.py
-```
-
-**5. Preprocess for training**:
-```bash
-# Create RoBERTa-ready training data
-python dataset_tools/dataset_preprocessing.py --input combined_dataset_clean.json --output preprocessed_data_roberta
-```
-
-### Using Preprocessed Data
-
-**Load HuggingFace format**:
 ```python
-from datasets import load_from_disk
-dataset = load_from_disk('preprocessed_data_roberta/huggingface')
-train_dataset = dataset['train']
+import torch
+from transformers import RobertaTokenizer
+from train_emotion_chatbot_roberta import RobertaEmotionChatbot
+
+# Setup
+tokenizer = RobertaTokenizer.from_pretrained('roberta-base')
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+model = RobertaEmotionChatbot(num_emotions=35, pretrained_model='roberta-base')
+
+# Load checkpoint
+checkpoint = torch.load('checkpoint/best_model_f1.pt', map_location=device)
+model.load_state_dict(checkpoint['model_state_dict'])
+model.to(device)
+model.eval()
+
+# Predict
+text = "I'm so happy and excited!"
+encoding = tokenizer(text, max_length=128, padding='max_length', truncation=True, return_tensors='pt')
+with torch.no_grad():
+    emotion_logits, _ = model(encoding['input_ids'].to(device), encoding['attention_mask'].to(device))
+    probs = torch.sigmoid(emotion_logits)[0]
+    top_5 = torch.topk(probs, 5)
+    print("Top emotions:", top_5)
 ```
 
-**Load JSON format**:
-```python
-import json
-with open('preprocessed_data_roberta/roberta_training/train_binary_sentiment.json', 'r') as f:
-    train_data = json.load(f)
-```
+Run: `python predict_emotion.py`
 
-**Load CSV format**:
-```python
-import pandas as pd
-df = pd.read_csv('preprocessed_data_roberta/csv/train.csv')
-```
-
-## Project Structure
+## 📁 Project Structure
 
 ```
 EmpathAI-Emotion-Chatbot/
-├── README.md                       # Project documentation
-├── requirements.txt                # Python dependencies
-├── PREPROCESSING_SUMMARY.md        # Detailed preprocessing documentation
-├── PROJECT_STATUS.md               # Current project status
+├── README.md                           # Project documentation
+├── requirements.txt                    # Python dependencies
+├── train_emotion_chatbot_roberta.py   # Main training script
+├── PREPROCESSING_SUMMARY.md            # Preprocessing documentation
+├── PROJECT_STATUS.md                   # Project status
 │
-├── combined_dataset_clean.json     # Main dataset (139K emotion entries)
+├── combined_dataset_clean.json         # Unified dataset (139K entries)
 │
-├── dataset_tools/                  # Dataset processing tools
-│   ├── dataset.py                  # Download datasets from Hugging Face
-│   ├── dataset_mapping.py          # Analyze and map dataset structures
-│   ├── dataset_cleaner.py          # Remove unlabeled/invalid entries
-│   ├── dataset_combiner.py         # Combine datasets into single JSON
-│   ├── dataset_preprocessing.py    # Preprocess data for RoBERTa training
-│   ├── validate_preprocessed_data.py # Validate and demonstrate preprocessed data
-│   ├── train_roberta_template.py   # Template script for RoBERTa training
-│   └── README.md                   # Dataset tools documentation
+├── checkpoint/                         # Model checkpoints
+│   ├── best_model_loss.pt             # Best model by validation loss
+│   ├── best_model_f1.pt               # Best model by F1 score
+│   ├── checkpoint_latest.pt           # Latest checkpoint
+│   └── checkpoint_epoch_*.pt          # Periodic checkpoints
 │
-└── preprocessed_data_roberta/      # Preprocessed training data
-    ├── json/                       # JSON format (train/val/test)
-    ├── csv/                        # CSV format (train/val/test)
-    ├── huggingface/                # HuggingFace dataset format
-    ├── roberta_training/           # RoBERTa-specific training files
-    └── metadata.json               # Complete preprocessing metadata
+├── results/                            # Training results
+│   ├── training_history_roberta.png   # Training curves
+│   ├── test_metrics_roberta_*.json    # Test metrics
+│   ├── classification_report_*.txt    # Detailed reports
+│   └── confusion_matrices_*.png       # Confusion matrices
+│
+├── dataset_tools/                      # Dataset processing tools
+│   ├── dataset.py                     # Download datasets
+│   ├── dataset_mapping.py             # Analyze structures
+│   ├── dataset_cleaner.py             # Clean datasets
+│   ├── dataset_combiner.py            # Combine datasets
+│   ├── dataset_preprocessing.py       # Preprocess for training
+│   └── validate_preprocessed_data.py  # Validation tools
+│
+└── preprocessed_data_roberta/          # Preprocessed training data
+    ├── json/                          # JSON format (train/val/test)
+    ├── csv/                           # CSV format
+    ├── huggingface/                   # HuggingFace datasets
+    └── roberta_training/              # RoBERTa-specific files
 ```
 
-## Preprocessed Dataset Files
+## 🔬 Dataset Files
 
-### Available Formats
+The `preprocessed_data_roberta/` folder contains training data in multiple formats:
+- **JSON**: `json/train.json`, `json/validation.json`, `json/test.json`
+- **CSV**: `csv/train.csv`, `csv/validation.csv`, `csv/test.csv`
+- **HuggingFace**: `huggingface/` (ready for Transformers library)
+- **RoBERTa Training**: `roberta_training/` (multi-emotion and binary sentiment)
 
-1. **HuggingFace Dataset Format** (`preprocessed_data_roberta/huggingface/`)
-   - Train: 97,517 examples | Validation: 20,897 | Test: 20,897
-   - Features: `text`, `labels`, `emotion_names`, `dataset_source`
-   - Ready for direct use with Transformers library
+## ⚙️ Hardware Requirements
 
-2. **JSON Format** (`preprocessed_data_roberta/json/`)
-   - Complete feature set including tokenization info
-   - Fields: `text`, `emotion_ids`, `emotion_names`, `dataset_source`, `is_multilabel`, etc.
+**Minimum (CPU)**: 4+ cores, 16GB RAM, 5GB storage, ~20 hours training  
+**Recommended (GPU)**: NVIDIA 8GB+ VRAM (RTX 3060/2060/3070/4060), ~6 hours training  
+**Peak VRAM**: ~4-5GB during training
 
-3. **CSV Format** (`preprocessed_data_roberta/csv/`)
-   - Flat format suitable for pandas analysis
-   - All preprocessing statistics included
+## 🔧 Troubleshooting
 
-4. **RoBERTa Training Format** (`preprocessed_data_roberta/roberta_training/`)
-   - `*_multi_emotion.json`: 35-class emotion classification
-   - `*_binary_sentiment.json`: 3-class sentiment (positive/negative/neutral)
-   - `label_mappings.json`: Complete label mapping information
+**CUDA Out of Memory**: Reduce `batch_size` from 16 to 8 in `train_emotion_chatbot_roberta.py`
 
-### Dataset Statistics
-
-- **Text Length**: Average 563 characters, 102 words, 118 RoBERTa tokens
-- **Truncation Rate**: 5% (texts longer than 512 tokens)
-- **Multilabel Rate**: 6.3% (entries with multiple emotions)
-- **Quality**: No missing values, UTF-8 encoded, validated data
-
-## Training Your Own Models
-
-### Using the Template Script
-
+**No GPU Detected**: Install CUDA PyTorch:
 ```bash
-# Modify train_roberta_template.py for your needs
-python dataset_tools/train_roberta_template.py
+pip install torch --index-url https://download.pytorch.org/whl/cu118
 ```
 
-### Recommended Hyperparameters
+**Module Not Found**: Install dependencies:
+```bash
+pip install -r requirements.txt
+```
 
-- **Model**: `roberta-base` (or `roberta-large` for better performance)
-- **Learning Rate**: 2e-5
-- **Batch Size**: 16-32 (adjust based on GPU memory)
-- **Epochs**: 3-5
-- **Max Length**: 512 tokens
-- **Hardware**: GPU with 8GB+ VRAM recommended
+## 🛠️ Development
 
-### Training Options
+### Customize Hyperparameters
+Edit `train_emotion_chatbot_roberta.py`:
+```python
+config = {
+    'batch_size': 16,           # Adjust for GPU memory
+    'learning_rate': 2e-5,      # Lower for stability
+    'num_epochs': 30,           # Max epochs
+    'dropout': 0.3,             # Regularization
+}
+```
 
-1. **Multi-Emotion Classification** (35 classes)
-   - Use `preprocessed_data_roberta/roberta_training/train_multi_emotion.json`
-   - Multi-label classification task
-   - Good for fine-grained emotion detection
+### Add New Datasets
+Modify `LABEL_MAPPINGS` in `dataset_tools/dataset_mapping.py` and `dataset_tools/dataset_combiner.py`
 
-2. **Binary Sentiment Classification** (3 classes)
-   - Use `preprocessed_data_roberta/roberta_training/train_binary_sentiment.json`
-   - Simpler task, faster training
-   - Good for general sentiment analysis
+### Future Enhancements
+- 🔲 Web interface (Streamlit/Flask)
+- 🔲 REST API for emotion detection
+- 🔲 Model quantization for faster inference
+- 🔲 Multi-lingual support
 
-## Development and Customization
+## 🤝 Contributing
 
-### Adding New Datasets
-Modify `LABEL_MAPPINGS` in `dataset_tools/dataset_mapping.py` and `dataset_tools/dataset_combiner.py` to add new emotion datasets.
+Contributions welcome! Fork the repo, create a feature branch, commit changes, and open a Pull Request.
 
-### Custom Preprocessing
-Edit `dataset_tools/dataset_preprocessing.py` to customize:
-- Text cleaning rules
-- Tokenization parameters
-- Label mapping strategies
-- Output formats
+## 📄 License
 
-### Extending the Pipeline
-The modular design makes it easy to:
-- Add new preprocessing steps
-- Support different model architectures
-- Create custom training formats
-- Integrate with different ML frameworks
+Open source project. See repository for license details.
 
-## Future Development
-
-This project currently focuses on dataset processing and preparation. Future enhancements may include:
-
-- **Emotion Detection Models**: Fine-tuned RoBERTa/BERT models for emotion classification
-- **Conversational AI Integration**: ChatGPT/LLM integration with emotion awareness
-- **Web Interface**: Streamlit or Flask app for interactive emotion analysis
-- **API Service**: REST API for emotion detection and sentiment analysis
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## License
-
-This project is open source. See the repository for license details.
-
-## Acknowledgments
+## 🙏 Acknowledgments
 
 - **Datasets**: GoEmotions (Google), IMDB, Emotion, TweetEval, Yelp Reviews
-- **Models**: Hugging Face Transformers (RoBERTa)
-- **Framework**: PyTorch, Transformers, Datasets, scikit-learn
+- **Models**: Hugging Face Transformers (RoBERTa-base)
+- **Framework**: PyTorch, Transformers, scikit-learn
 
-## Citation
-
-If you use this dataset preprocessing pipeline in your research, please cite:
+## 📚 Citation
 
 ```bibtex
 @misc{empathAI2025,
-  title={EmpathAI: Emotion Dataset Preprocessing Pipeline},
+  title={EmpathAI: Emotion Recognition with RoBERTa Transformers},
   author={EmpathAI Team},
   year={2025},
-  publisher={GitHub},
   url={https://github.com/AbdulaAlShyed-2212592042/EmpathAI-Emotion-Chatbot}
 }
 ```
+
+---
+**Built with ❤️ using RoBERTa, PyTorch, and 139K+ emotion-labeled examples**
 

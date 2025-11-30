@@ -106,13 +106,22 @@ cython_debug/
 # Large datasets and models
 dataset/
 dataset_*/
+dataset_cleaned/
 *.jsonl
-models/
-checkpoints/
-results/
-logs/
 
-# Large JSON files (keep only the clean combined dataset)
+# Model checkpoints and training outputs
+checkpoint/
+*.pt
+*.pth
+*.bin
+roberta_emotion_models/
+emotion_chatbot_models/
+
+# Training logs and results
+training_*.log
+*.log
+
+# Temporary or large combined datasets (keep the preprocessed clean version)
 combined_dataset.json
 
 # API keys and secrets
