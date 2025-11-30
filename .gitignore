@@ -109,6 +109,10 @@ dataset_*/
 dataset_cleaned/
 *.jsonl
 
+# Data folder (keep structure, ignore large files)
+data/combined_dataset.json
+data/dataset_*/
+
 # Model checkpoints and training outputs
 checkpoint/
 *.pt
@@ -116,8 +120,12 @@ checkpoint/
 *.bin
 roberta_emotion_models/
 emotion_chatbot_models/
+models/*.pt
+models/*.pth
+models/*.bin
 
 # Training logs and results
+logs/
 training_*.log
 *.log
 

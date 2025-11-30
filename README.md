@@ -58,6 +58,12 @@ This project processes and combines multiple emotion datasets into a unified for
 
 **Complete emotion set (35)**: admiration, amusement, anger, annoyance, approval, caring, confusion, curiosity, desire, disappointment, disapproval, disgust, embarrassment, excitement, fear, gratitude, grief, joy, love, nervousness, optimism, pride, realization, relief, remorse, sadness, surprise, neutral, positive, negative, plus Yelp ratings (1-5 stars)
 
+---
+
+> **📖 New to the project?** Check out the [Quick Start Guide](docs/QUICK_START_GUIDE.md) for a 5-minute setup!
+
+---
+
 ## 🚀 Quick Start
 
 ### Installation
@@ -79,6 +85,13 @@ This project processes and combines multiple emotion datasets into a unified for
    python -c "import torch; print('CUDA:', torch.cuda.is_available())"
    ```
 
+### Use Pre-trained Model
+
+```bash
+# Run prediction script
+python scripts/predict_emotion.py
+```
+
 ### Train Model
 
 ```bash
@@ -87,11 +100,127 @@ python train_emotion_chatbot_roberta.py
 
 **Training takes ~6 hours on GPU (RTX 3060) or ~20 hours on CPU.**
 
+## 📁 Project Structure
+
+```
+EmpathAI-Emotion-Chatbot/
+│
+├── data/                          # Dataset files
+│   ├── preprocessed_data_roberta/ # Preprocessed training data
+│   │   ├── json/                  # Train/test/val splits
+│   │   ├── csv/                   # CSV format datasets
+│   │   └── huggingface/           # HuggingFace Dataset format
+│   └── combined_dataset_clean.json
+│
+├── models/                        # Trained model files
+│   ├── best_model_loss.pt         # Best model by validation loss
+│   └── best_model_f1.pt           # Best model by F1 score
+│
+├── checkpoint/                    # Training checkpoints
+│   ├── best_model_loss.pt
+│   ├── best_model_f1.pt
+│   └── checkpoint_latest.pt
+│
+├── results/                       # Training results
+│   ├── test_metrics.json
+│   ├── training_history.json
+│   └── confusion_matrix_*.png
+│
+├── logs/                          # Training logs
+│   └── training_roberta_*.log
+│
+├── scripts/                       # Utility scripts
+│   └── predict_emotion.py         # Inference script
+│
+├── docs/                          # Documentation
+│   ├── PREPROCESSING_SUMMARY.md
+│   ├── PROJECT_STATUS.md
+│   └── PROJECT_ORGANIZATION.md
+│
+├── dataset_tools/                 # Data processing tools
+│   ├── dataset_preprocessing.py
+│   ├── dataset_cleaner.py
+│   └── dataset_combiner.py
+│
+├── train_emotion_chatbot_roberta.py  # Main training script
+├── requirements.txt
+└── README.md
+```
+
+## 📊 Results & Achievements
+
+### Model Performance Summary
+
+Our fine-tuned RoBERTa-base model demonstrates strong performance across 35 emotion categories:
+
+| Metric | Score |
+|--------|-------|
+| **Exact Match Accuracy** | 66.9% |
+| **Hamming Accuracy** | 98.3% |
+| **F1 Score (Macro)** | 51.7% |
+| **F1 Score (Weighted)** | 70.3% |
+| **Precision (Macro)** | 59.0% |
+| **Recall (Macro)** | 48.7% |
+
+### Top Performing Emotions
+
+| Emotion | F1 Score | Samples |
+|---------|----------|---------|
+| **negative** | 91.2% | 25,000 |
+| **positive** | 81.3% | 25,000 |
+| **joy** | 86.8% | 9,709 |
+| **love** | 86.3% | 4,217 |
+| **excitement** | 83.2% | 2,516 |
+| **anger** | 81.8% | 6,787 |
+| **neutral** | 77.6% | 17,770 |
+| **sadness** | 77.3% | 8,748 |
+
+### Training Efficiency
+
+- **Total Training Time**: ~6 hours on NVIDIA RTX 3060 (12GB VRAM)
+- **Epochs Completed**: 23 (early stopping triggered)
+- **Training Samples**: 97,517 (100% of available data)
+- **Validation Samples**: 20,897
+- **Test Samples**: 20,897
+- **Model Parameters**: 164M (RoBERTa-base)
+- **Peak GPU Memory**: ~4-5GB VRAM
+
+### Key Features Implemented
+
+✅ **Advanced Training Techniques**:
+- Learning rate warmup (500 steps)
+- Gradient accumulation (effective batch size: 32)
+- Label smoothing (0.1)
+- Early stopping (patience: 7 epochs)
+- Dual model selection (best loss & best F1)
+
+✅ **Multi-Dataset Integration**:
+- 5 diverse emotion datasets combined
+- 139,311 preprocessed samples
+- 35 unified emotion labels
+- Multi-label and single-label support
+
+✅ **Production-Ready Pipeline**:
+- Comprehensive checkpointing
+- Detailed logging and metrics
+- Multiple output formats (JSON, CSV, HuggingFace)
+- Reproducible training with seed fixing
+
 ## 📦 Usage
 
 ### Predict Emotions (Inference)
 
-Create `predict_emotion.py`:
+Use the pre-built inference script:
+
+```bash
+# Interactive mode
+python scripts/predict_emotion.py
+
+# Batch prediction
+python scripts/predict_emotion.py --texts "I'm so happy!" "This is terrible"
+```
+
+Or create your own prediction script:
 
 ```python
 import torch
@@ -104,7 +233,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = RobertaEmotionChatbot(num_emotions=35, pretrained_model='roberta-base')
 
 # Load checkpoint
-checkpoint = torch.load('checkpoint/best_model_f1.pt', map_location=device)
+checkpoint = torch.load('models/best_model_f1.pt', map_location=device)
 model.load_state_dict(checkpoint['model_state_dict'])
 model.to(device)
 model.eval()
@@ -119,50 +248,29 @@ with torch.no_grad():
     print("Top emotions:", top_5)
 ```
 
-Run: `python predict_emotion.py`
+### Train Custom Model
 
-## 📁 Project Structure
+```bash
+# Full training (30 epochs with early stopping)
+python train_emotion_chatbot_roberta.py
 
+# Monitor training
+tail -f logs/training_roberta_*.log
+
+# Check results
+cat results/test_metrics.json
 ```
-EmpathAI-Emotion-Chatbot/
-├── README.md                           # Project documentation
-├── requirements.txt                    # Python dependencies
-├── train_emotion_chatbot_roberta.py   # Main training script
-├── PREPROCESSING_SUMMARY.md            # Preprocessing documentation
-├── PROJECT_STATUS.md                   # Project status
-│
-├── combined_dataset_clean.json         # Unified dataset (139K entries)
-│
-├── checkpoint/                         # Model checkpoints
-│   ├── best_model_loss.pt             # Best model by validation loss
-│   ├── best_model_f1.pt               # Best model by F1 score
-│   ├── checkpoint_latest.pt           # Latest checkpoint
-│   └── checkpoint_epoch_*.pt          # Periodic checkpoints
-│
-├── results/                            # Training results
-│   ├── training_history_roberta.png   # Training curves
-│   ├── test_metrics_roberta_*.json    # Test metrics
-│   ├── classification_report_*.txt    # Detailed reports
-│   └── confusion_matrices_*.png       # Confusion matrices
-│
-├── dataset_tools/                      # Dataset processing tools
-│   ├── dataset.py                     # Download datasets
-│   ├── dataset_mapping.py             # Analyze structures
-│   ├── dataset_cleaner.py             # Clean datasets
-│   ├── dataset_combiner.py            # Combine datasets
-│   ├── dataset_preprocessing.py       # Preprocess for training
-│   └── validate_preprocessed_data.py  # Validation tools
-│
-└── preprocessed_data_roberta/          # Preprocessed training data
-    ├── json/                          # JSON format (train/val/test)
-    ├── csv/                           # CSV format
-    ├── huggingface/                   # HuggingFace datasets
-    └── roberta_training/              # RoBERTa-specific files
-```
+
+**Training Configuration:**
+- Batch size: 16 (GPU) or 8 (CPU)
+- Learning rate: 2e-5 with warmup (500 steps)
+- Max epochs: 30 with early stopping (patience: 7)
+- Gradient accumulation: 2 steps
+- Label smoothing: 0.1
 
 ## 🔬 Dataset Files
 
-The `preprocessed_data_roberta/` folder contains training data in multiple formats:
+The `data/preprocessed_data_roberta/` folder contains training data in multiple formats:
 - **JSON**: `json/train.json`, `json/validation.json`, `json/test.json`
 - **CSV**: `csv/train.csv`, `csv/validation.csv`, `csv/test.csv`
 - **HuggingFace**: `huggingface/` (ready for Transformers library)
@@ -213,6 +321,19 @@ Modify `LABEL_MAPPINGS` in `dataset_tools/dataset_mapping.py` and `dataset_tools
 ## 🤝 Contributing
 
 Contributions welcome! Fork the repo, create a feature branch, commit changes, and open a Pull Request.
+
+## 👥 Authors
+
+**Md Abdula Al Shyed**
+- Student ID: 2212592042
+- Email: abdula.shyed@northsouth.edu
+- GitHub: [@AbdulaAlShyed-2212592042](https://github.com/AbdulaAlShyed-2212592042)
+
+**Md. Raduain Hossain Rimon**
+- Student ID: 2021995642
+- Email: raduain.rimon@northsouth.edu
+
+*North South University*
 
 ## 📄 License
 

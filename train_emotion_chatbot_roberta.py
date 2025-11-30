@@ -749,9 +749,9 @@ def main():
     """Main training function."""
     # Configuration with optimized hyperparameters
     config = {
-        'train_data': r"C:\Users\sslue\AI chatbot\EmpathAI-Emotion-Chatbot\preprocessed_data_roberta\json\train.json",
-        'val_data': r"C:\Users\sslue\AI chatbot\EmpathAI-Emotion-Chatbot\preprocessed_data_roberta\json\validation.json",
-        'test_data': r"C:\Users\sslue\AI chatbot\EmpathAI-Emotion-Chatbot\preprocessed_data_roberta\json\test.json",
+        'train_data': r"data\preprocessed_data_roberta\json\train.json",
+        'val_data': r"data\preprocessed_data_roberta\json\validation.json",
+        'test_data': r"data\preprocessed_data_roberta\json\test.json",
         'batch_size': 16,  # Batch size for GPU memory efficiency
         'max_length': 128,  # Max sequence length
         'dropout': 0.3,  # Dropout for regularization
