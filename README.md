@@ -200,12 +200,6 @@ Our fine-tuned RoBERTa-base model demonstrates strong performance across 35 emot
 - 35 unified emotion labels
 - Multi-label and single-label support
 
-✅ **Production-Ready Pipeline**:
-- Comprehensive checkpointing
-- Detailed logging and metrics
-- Multiple output formats (JSON, CSV, HuggingFace)
-- Reproducible training with seed fixing
-
 ## 📦 Usage
 
 ### Predict Emotions (Inference)
@@ -217,7 +211,7 @@ Use the pre-built inference script:
 python scripts/predict_emotion.py
 
 # Batch prediction
-python scripts/predict_emotion.py --texts "I'm so happy!" "This is terrible"
+python scripts/predict_emotion.py --texts "I'm so happy!" "This is terrible."
 ```
 
 Or create your own prediction script:
@@ -241,7 +235,7 @@ model.eval()
 # Predict
 text = "I'm so happy and excited!"
 encoding = tokenizer(text, max_length=128, padding='max_length', truncation=True, return_tensors='pt')
-with torch.no_grad():
+with a torch.no_grad():
     emotion_logits, _ = model(encoding['input_ids'].to(device), encoding['attention_mask'].to(device))
     probs = torch.sigmoid(emotion_logits)[0]
     top_5 = torch.topk(probs, 5)
@@ -337,7 +331,7 @@ Contributions welcome! Fork the repo, create a feature branch, commit changes, a
 
 ## 📄 License
 
-Open source project. See repository for license details.
+Open source project. See the repository for license details.
 
 ## 🙏 Acknowledgments
 
@@ -357,5 +351,5 @@ Open source project. See repository for license details.
 ```
 
 ---
-**Built with ❤️ using RoBERTa, PyTorch, and 139K+ emotion-labeled examples**
+**Built with  using RoBERTa, PyTorch, and 139K+ emotion-labeled examples**
 
